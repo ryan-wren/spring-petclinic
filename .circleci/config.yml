@@ -8,5 +8,4 @@ jobs:
       - run: echo "hello world"
       - run: |
           ./mvnw package
-          java -jar target/*.jar
 
