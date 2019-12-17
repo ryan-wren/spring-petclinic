@@ -1,4 +1,4 @@
-version: 2.1
+version: 2.0
 
 jobs:
   build:
@@ -6,4 +6,4 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
-      - run: echo "hello world"
+      - run: ./mvnw package
