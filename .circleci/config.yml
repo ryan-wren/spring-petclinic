@@ -1,8 +1,9 @@
 version: 2.1
+
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:openjdk-11
+      - image: circleci/openjdk:stretch
     steps:
       - checkout
       - run: echo "hello world"
