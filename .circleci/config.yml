@@ -2,8 +2,11 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:4.8.2
+      - image: circleci/openjdk:latest
     steps:
       - checkout
       - run: echo "hello world"
+      - run: |
+          ./mvnw package
+          java -jar target/*.jar
 
