@@ -10,7 +10,7 @@ jobs:
       - run: ./mvnw test | circleci tests split --split-by=timings
       - run: ls
       - store_test_results:
-          path: test-results
+          path: target/surefire-reports
 
 #
 #  build:
