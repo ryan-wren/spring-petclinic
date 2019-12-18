@@ -2,13 +2,12 @@ version: 2.0
 
 jobs:
   test:
+    parallelism: 2
     docker:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
-      - run: mkdir test-results
       - run: ./mvnw test | circleci tests split --split-by=timings
-      - run: ls
       - store_test_results:
           path: target/surefire-reports
 
