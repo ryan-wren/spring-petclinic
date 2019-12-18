@@ -6,7 +6,7 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
-      - run: ./mvnw test
+      - run: ./mvnw test | circleci tests split --split-by=timings
 
   build:
     docker:
