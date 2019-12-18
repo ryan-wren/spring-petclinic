@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - run: mkdir test-results
-      - run: ./mvnw test | circleci tests split --split-by=timings
+      - run: ./mvnw -f test-results/pom.xml test | circleci tests split --split-by=timings
       - store_test_results:
           path: test-results
 
