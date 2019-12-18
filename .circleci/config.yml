@@ -1,6 +1,13 @@
 version: 2.0
 
 jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - run: ./mvnw test
+
   build:
     docker:
       - image: circleci/openjdk:stretch
@@ -15,3 +22,9 @@ workflows:
     jobs:
       - build
 
+  build-then-test:
+    jobs:
+      - test
+      - build:
+          requires:
+            - build
