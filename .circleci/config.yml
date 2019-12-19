@@ -10,28 +10,13 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
             - v1-dependencies-
-      - run: ./mvnw test
+      - run: ./mvnw test verify
       - store_artifacts:
           path: target/site/jacoco/index.html
-
-  build:
-    docker:
-      - image: circleci/openjdk:stretch
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
-      - run: ./mvnw package
-      - save_cache:
-            paths:
-              - ~/.m2
-            key: v1-dependencies-{{ checksum "pom.xml" }}
 
 workflows:
   version: 2
 
-  test-then-build:
+  test-with-store-artifacts:
     jobs:
       - test
