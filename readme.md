@@ -42,7 +42,7 @@ jobs:
 workflows:
   version: 2
 
-  build-then-test:
+  test-then-build:
     jobs:
       - test
       - build:
@@ -54,3 +54,41 @@ A workflow is a dependency graph of jobs. This basic workflow runs a `test` job 
 The `build` job will not run unless the `test` job exits successfully. 
 
 ### Splitting tests across parallel containers
+```yaml
+version: 2.0
+
+jobs:
+  test:
+    parallelism: 2 # configure the containers to run in parallel
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - run: |
+          ./mvnw \
+          -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
+          | circleci tests split --split-by=timings); \
+          do basename $file \
+          | sed -e "s/.java/,/"; \
+          done | tr -d '\r\n') \
+          -e test
+      - store_test_results:
+          path: target/surefire-reports
+
+  build:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - run: ./mvnw -Dmaven.test.skip=true package
+
+workflows:
+  version: 2
+
+  test-then-build:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
+```
