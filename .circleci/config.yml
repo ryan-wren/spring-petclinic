@@ -7,11 +7,14 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
-#      - run: ./mvnw test | circleci tests split --split-by=timings
+      - run: BOOP=(circleci tests glob "src/test/**/**.java") && echo ${BOOP}
+      - run: |
+          WHAT_IS_THIS=$(for file in $(circleci tests glob "src/test/**/**.java" | circleci tests split --split-by=timings); do basename $file | sed -e "s/.java/,/"; done | tr -d '\r\n')
+          echo $WHAT_IS_THIS
       - run: |
           ./mvnw \
           -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
-          | circleci tests split --split-by=timings --timings-type=classname); \
+          | circleci tests split --split-by=timings); \
           do basename $file \
           | sed -e "s/.java/,/"; \
           done | tr -d '\r\n') \
