@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run: echo $(circleci tests glob "src/test/**/**.java")
       - run: echo $(circleci tests glob "src/test/**/**.java" | circleci tests split --split-by=timings)
-      - run: echo $(for file in $(circleci tests glob "src/test/**/**.java"); do basename $file | sed -e "s/.java/,/"; done | tr -d '\r\n'))
+      - run: echo $(for file in $(circleci tests glob "src/test/**/**.java"); do basename $file | sed -e "s/.java/,/"; done | tr -d '\r\n')
       - run: |
           WHAT_IS_THIS=$(for file in $(circleci tests glob "src/test/**/**.java" | circleci tests split --split-by=timings); do basename $file | sed -e "s/.java/,/"; done | tr -d '\r\n')
           echo $WHAT_IS_THIS
