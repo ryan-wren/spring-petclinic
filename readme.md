@@ -53,3 +53,4 @@ workflows:
 A workflow is a dependency graph of jobs. This basic workflow runs a `test` job and a `build` job. 
 The `build` job will not run unless the `test` job exits successfully. 
 
+### Splitting tests across parallel containers

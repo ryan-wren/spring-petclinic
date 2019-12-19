@@ -7,7 +7,8 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
-      - run: ./mvnw test | circleci tests split --split-by=timings
+#      - run: ./mvnw test | circleci tests split --split-by=timings
+      - run: ./mvnw -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java") test | circleci tests split --split-by=timings)
       - store_test_results:
           path: target/surefire-reports
 
