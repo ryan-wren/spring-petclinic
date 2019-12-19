@@ -54,6 +54,29 @@ workflows:
 A workflow is a dependency graph of jobs. This basic workflow runs a `test` job and a `build` job. 
 The `build` job will not run unless the `test` job exits successfully. 
 
+### Storing code coverage artifacts
+```yaml
+version: 2.0
+
+jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - run: ./mvnw test verify
+      - store_artifacts:
+          path: target/site/jacoco/index.html
+
+workflows:
+  version: 2
+
+  test-with-store-artifacts:
+    jobs:
+      - test
+```
+The Maven test runner with the JaCoCo plugin generates a code coverage report during the build. To save that report as a build artifact, use the `store_artifacts` step.
+
 ### Caching dependencies
 ```yaml
 version: 2.0

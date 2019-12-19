@@ -6,10 +6,6 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
       - run: ./mvnw test verify
       - store_artifacts:
           path: target/site/jacoco/index.html
