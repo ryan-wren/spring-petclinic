@@ -59,7 +59,7 @@ version: 2.0
 
 jobs:
   test:
-    parallelism: 2 # configure the containers to run in parallel
+    parallelism: 2 # parallel containers to split the tests among
     docker:
       - image: circleci/openjdk:stretch
     steps:
@@ -72,7 +72,7 @@ jobs:
           | sed -e "s/.java/,/"; \
           done | tr -d '\r\n') \
           -e test
-      - store_test_results:
+      - store_test_results: # We use this timing data to optimize the future runs
           path: target/surefire-reports
 
   build:
@@ -92,3 +92,14 @@ workflows:
           requires:
             - test
 ```
+Splitting tests by timings is a great way to divide time-consuming tests across multiple parallel containers. 
+I think of splitting by timings as requiring 4 parts:
+1) a list of tests to split
+2) the command: circleci tests split --split-by=timings
+3) containers to run the tests
+4) historical data to intelligently decide how to split tests
+
+To collect the list of tests to split, I simply pulled out all of the Java test files with this command: `circleci tests glob "src/test/**/**.java"`. 
+Then I used `sed` and `tr` to translate this newline-separated list of test files into a comma-separated list of test classes. 
+
+Adding `store_test_results` enables CircleCI to access the historical timing data for previous executions of these tests, so the platform knows how to split tests to achieve the fastest overall runtime. 
