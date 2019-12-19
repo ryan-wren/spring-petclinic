@@ -1,6 +1,7 @@
 
-# Spring PetClinic Sample Application [![Build Status](https://travis-ci.org/spring-projects/spring-petclinic.png?branch=master)](https://travis-ci.org/spring-projects/spring-petclinic/)
-
+# Spring PetClinic Sample Application
+ 
+TODO: add CircleCI build status
 TODO: add link to Spring PetClinic page on Spring
 
 ## Sample configurations
@@ -52,6 +53,30 @@ workflows:
 ```
 A workflow is a dependency graph of jobs. This basic workflow runs a `test` job and a `build` job. 
 The `build` job will not run unless the `test` job exits successfully. 
+
+### Caching dependencies
+```yaml
+version: 2.0
+
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }} # appends cache key with a hash of pom.xml file
+            - v1-dependencies- # fallback in case previous cache key is not found
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - save_cache:
+            paths:
+              - ~/.m2
+            key: v1-dependencies-{{ checksum "pom.xml" }}
+```
+The first time I ran this build without any dependencies cached (https://circleci.com/gh/annapamma/spring-petclinic/45), it took 2m14s. Once I was able to just restore my dependencies, the build took 39 seconds (https://circleci.com/gh/annapamma/spring-petclinic/46). 
+
+Note that the `restore_cache` step will restore whichever cache it first matches. I add a restore key here as a fallback. In this case, even if pom.xml changes, I can still restore the previous cache. This means my job will only have to fetch the dependencies that have changed between the new pom.xml and the previous cache. 
 
 ### Splitting tests across parallel containers
 ```yaml
