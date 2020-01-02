@@ -8,9 +8,10 @@ TODO: add link to Spring PetClinic page on Spring
 ## Sample configurations
 - [A basic build](#a-basic-build)
 - [Using a workflow to test then build](#using-a-workflow-to-test-then-build)
-- [Storing code coverage artifacts](#storing-code-coverage-artifacts)
 - [Caching dependencies](#caching-dependencies)
 - [Splitting tests across parallel containers](#splitting-tests-across-parallel-containers)
+- [Storing code coverage artifacts](#storing-code-coverage-artifacts)
+- [All together](#all-together)
 
 ### A basic build
 ```yaml
@@ -26,7 +27,7 @@ jobs:
 ```
 
 Version 2.0 configs without workflows will look for a job entitled `build`.
-A job is a essentially a series of commands run in a clean execution environment. Notice the two primary parts of a job: the executor and steps. 
+A job is a essentially a series of commands run in a clean execution environment. Notice the two primary parts of a job: the executor and steps. In this case, we are using the `docker` executor and passing in a [CCI convenience image](https://circleci.com/docs/2.0/circleci-images/). 
 
 ### Using a workflow to test then build
 ```yaml
@@ -56,33 +57,9 @@ workflows:
       - build:
           requires:
             - test
-
 ```
 A workflow is a dependency graph of jobs. This basic workflow runs a `test` job and a `build` job. 
 The `build` job will not run unless the `test` job exits successfully. 
-
-### Storing code coverage artifacts
-```yaml
-version: 2.0
-
-jobs:
-  test:
-    docker:
-      - image: circleci/openjdk:stretch
-    steps:
-      - checkout
-      - run: ./mvnw test verify
-      - store_artifacts:
-          path: target/site/jacoco/index.html
-
-workflows:
-  version: 2
-
-  test-with-store-artifacts:
-    jobs:
-      - test
-```
-The Maven test runner with the JaCoCo plugin generates a code coverage report during the build. To save that report as a build artifact, use the `store_artifacts` step.
 
 ### Caching dependencies
 ```yaml
@@ -159,6 +136,81 @@ Then I used `sed` and `tr` to translate this newline-separated list of test file
 
 Adding `store_test_results` enables CircleCI to access the historical timing data for previous executions of these tests, so the platform knows how to split tests to achieve the fastest overall runtime. 
 
+### Storing code coverage artifacts
+```yaml
+version: 2.0
 
+jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - run: ./mvnw test verify
+      - store_artifacts:
+          path: target/site/jacoco/index.html
 
+workflows:
+  version: 2
+
+  test-with-store-artifacts:
+    jobs:
+      - test
+```
+The Maven test runner with the JaCoCo plugin generates a code coverage report during the build. To save that report as a build artifact, use the `store_artifacts` step.
+
+### All together
+```yaml
+version: 2.0
+
+jobs:
+  test:
+    parallelism: 2
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+      - run: |
+            ./mvnw \
+            -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
+            | circleci tests split --split-by=timings); \
+            do basename $file \
+            | sed -e "s/.java/,/"; \
+            done | tr -d '\r\n') \
+            -e test verify
+      - store_test_results:
+          path: target/surefire-reports
+      - store_artifacts:
+          path: target/site/jacoco/index.html
+
+  build:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+
+workflows:
+  version: 2
+
+  test-then-build:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
+```
+All of these features can be used in a single config file to optimize your build. 
 
