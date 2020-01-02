@@ -7,6 +7,8 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
+      - attach_workspace:
+          at: /target
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
