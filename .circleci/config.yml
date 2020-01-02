@@ -1,25 +1,29 @@
 version: 2.0
 
 jobs:
+  test:
+    parallelism: 2 # parallel containers to split the tests among
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - run: |
+          ./mvnw \
+          -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
+          | circleci tests split --split-by=timings); \
+          do basename $file \
+          | sed -e "s/.java/,/"; \
+          done | tr -d '\r\n') \
+          -e test
+      - store_test_results: # We use this timing data to optimize the future runs
+          path: target/surefire-reports
+
   build:
     docker:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
       - run: ./mvnw -Dmaven.test.skip=true package
-      - persist_to_workspace:
-         root: ./
-         paths:
-           - target/
-
-  test:
-    docker:
-      - image: circleci/openjdk:stretch
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./target
-      - run: ./mvnw test
 
 workflows:
   version: 2

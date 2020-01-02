@@ -165,7 +165,6 @@ workflows:
       - test:
           requires:
             - build
-
 ```
 Splitting tests by timings is a great way to divide time-consuming tests across multiple parallel containers. 
 I think of splitting by timings as requiring 4 parts:
