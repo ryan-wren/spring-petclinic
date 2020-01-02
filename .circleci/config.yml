@@ -8,7 +8,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /target
+          at: ./target
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
