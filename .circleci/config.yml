@@ -1,6 +1,6 @@
 version: 2.1
 
-commands: # a named collection of steps that can be reused in different jobs
+commands:
   restore_cache_cmd:
     steps:
       - restore_cache:
@@ -35,20 +35,39 @@ executors:
      image: ubuntu-1604:201903-01
 
 jobs:
-  test:
+  test-with-docker:
     executor: docker-executor
     steps:
       - test
 
-  build:
+  build-with-docker:
+    executor: docker-executor
+    steps:
+      - build
+
+  test-with-machine:
+    executor: machine-executor
+    steps:
+      - test
+
+  build-with-machine:
     executor: machine-executor
     steps:
       - build
 
+
 workflows:
-  build-then-test:
+  build-then-test-with-docker:
     jobs:
-      - build
-      - test:
+      - build-with-docker
+      - test-with-docker:
           requires:
-            - build
+            - build-with-docker
+
+  build-then-test-with-machine:
+    jobs:
+      - build-with-machine
+      - test-with-machine:
+          requires:
+            - build-with-machine
+
