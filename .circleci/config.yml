@@ -43,6 +43,34 @@ jobs:
          paths:
            - project/target
 
+  build_with_binary: # is this faster?
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project/target
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/target
+
+workflows:
+  build1-then-2:
+    jobs:
+      - build
+      - build_with_binary:
+          requires:
+            - build
 #workflows:
 #  version: 2
 #
