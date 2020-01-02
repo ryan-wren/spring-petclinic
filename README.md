@@ -1,7 +1,7 @@
 
 # Spring PetClinic Sample Application
  
-TODO: add CircleCI build status
+[![CircleCI](https://circleci.com/gh/annapamma/spring-petclinic.svg?style=svg)](https://circleci.com/gh/annapamma/spring-petclinic)
 
 TODO: add link to Spring PetClinic page on Spring
 
