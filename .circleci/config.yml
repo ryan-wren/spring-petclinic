@@ -50,15 +50,15 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/project/target
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
-      - run: ./mvnw -Dmaven.test.skip=true package
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
+#      - restore_cache:
+#          keys:
+#            - v1-dependencies-{{ checksum "pom.xml" }}
+#            - v1-dependencies-
+      - run: ./mvnw install
+#      - save_cache:
+#          paths:
+#            - ~/.m2
+#          key: v1-dependencies-{{ checksum "pom.xml" }}
       - persist_to_workspace:
           root: ~/
           paths:
