@@ -13,7 +13,7 @@ To see how we would use orbs to checkout, build, and test in one line, please se
 To see these features in a version 2.0 config, please see the [master branch](https://github.com/annapamma/spring-petclinic/tree/master).
 
 ## Sample configurations: version 2.0
-- [A basic build](#a-basic-build)
+- [Building and testing with reusable cache commands](#building-and-testing-with-reusable-cache-commands)
 - [Using a workflow to test then build](#using-a-workflow-to-test-then-build)
 - [Caching dependencies](#caching-dependencies)
 - [Splitting tests across parallel containers](#splitting-tests-across-parallel-containers)
@@ -24,7 +24,7 @@ To see these features in a version 2.0 config, please see the [master branch](ht
 ```yaml
 version: 2.1
 
-commands: # a named collection of steps that can be reused in different jobs
+commands:
   restore_cache_cmd:
     steps:
       - restore_cache:
@@ -56,5 +56,14 @@ jobs:
       - restore_cache_cmd
       - run: ./mvnw -Dmaven.test.skip=true package
       - save_cache_cmd
+
+workflows:
+  build-then-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
 ```
 Notice that the `restore_cache_cmd` and `save_cache_cmd` commands that we have declared at the beginning of the config have been reused in both the `test` and `build` jobs.
+

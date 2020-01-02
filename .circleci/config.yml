@@ -13,25 +13,32 @@ commands: # a named collection of steps that can be reused in different jobs
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
+  test:
+    steps:
+      - checkout
+      - restore_cache_cmd
+      - run: ./mvnw test
+      - save_cache_cmd
+  build:
+    steps:
+      - checkout
+      - restore_cache_cmd
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - save_cache_cmd
 
 jobs:
   test:
     docker:
       - image: circleci/openjdk:stretch
     steps:
-      - checkout
-      - restore_cache_cmd
-      - run: ./mvnw test
-      - save_cache_cmd
+      - test
+
 
   build:
     docker:
       - image: circleci/openjdk:stretch
     steps:
-      - checkout
-      - restore_cache_cmd
-      - run: ./mvnw -Dmaven.test.skip=true package
-      - save_cache_cmd
+      - build
 
 workflows:
   build-then-test:
