@@ -46,7 +46,6 @@ jobs:
       - build
 
 workflows:
-  version: 2
   build-then-test:
     jobs:
       - build

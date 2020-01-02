@@ -62,7 +62,6 @@ workflows:
             - build
 ```
 Notice that the `restore_cache_cmd` and `save_cache_cmd` commands that we have declared at the beginning of the config have been reused in both the `test` and `build` jobs.
-Also note that `workflows` in CircleCI 2.1 do not require a `version`. In fact, adding a `version` to 
 
 ### Reusing commands in commands
 ```yaml
