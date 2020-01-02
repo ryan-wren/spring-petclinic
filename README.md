@@ -29,3 +29,4 @@ Here we are using the [maven orb](https://circleci.com/orbs/registry/orb/circlec
 The `maven/test` command checks out the code, builds, tests, and uploads the test result. 
 The parameters of this command can be customized. See the [maven orb docs](https://circleci.com/orbs/registry/orb/circleci/maven) for more information.
 
+### Running tests in parallel with orb
