@@ -1,4 +1,11 @@
-version: 2.0
+version: 2.1
+
+commands:
+  restore-cache:
+    - restore_cache:
+        keys:
+          - v1-dependencies-{{ checksum "pom.xml" }}
+          - v1-dependencies-
 
 jobs:
 #  test:
@@ -29,10 +36,11 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
+      - restore_cache
+#      - restore_cache:
+#          keys:
+#            - v1-dependencies-{{ checksum "pom.xml" }}
+#            - v1-dependencies-
       - run: ./mvnw -Dmaven.test.skip=true package
       - save_cache:
           paths:
@@ -48,3 +56,9 @@ jobs:
 #      - build:
 #          requires:
 #            - test
+
+
+# BUILD LINK: https://circleci.com/gh/annapamma/spring-petclinic/96#config/containers/0
+# Where is the build directory? Is that what a .jar file is?
+# Also, does it make sense to test then build? Usually for JavaScript I would test and then build,
+# but it seems like for a compiled language the opposite is meant to happen.
