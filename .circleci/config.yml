@@ -3,13 +3,7 @@ version: 2.1
 orbs:
   maven: circleci/maven@0.0.12
 
-executors:
-  custom-executor:
-    docker:
-      - image: 'circleci/openjdk:9'
-
 workflows:
   maven_test:
     jobs:
-      - maven/test:
-          executor: custom-executor
+      - maven/test # checkout, build, test, and upload test results
