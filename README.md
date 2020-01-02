@@ -6,9 +6,11 @@ TODO: add CircleCI build status
 TODO: add link to Spring PetClinic page on Spring
 
 ## Sample configurations
-[A basic build](#a-basic-build)
-
-[Splitting tests across parallel containers](#splitting-tests-across-parallel-containers)
+- [A basic build](#a-basic-build)
+- [Using a workflow to test then build](#using-a-workflow-to-test-then-build)
+- [Storing code coverage artifacts](#storing-code-coverage-artifacts)
+- [Caching dependencies](#caching-dependencies)
+- [Splitting tests across parallel containers](#splitting-tests-across-parallel-containers)
 
 ### A basic build
 ```yaml
