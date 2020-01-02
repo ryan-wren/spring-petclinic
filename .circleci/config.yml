@@ -39,7 +39,7 @@ jobs:
 
   build:
     docker:
-      - image: circleci/openjdk:stretch
+      - image: circleci/openjdk:9.0.4-12
     steps:
       - build
 
