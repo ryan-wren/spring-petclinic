@@ -1,7 +1,7 @@
 
 # Spring PetClinic Sample Application
  
-[![CircleCI](https://circleci.com/gh/annapamma/spring-petclinic.svg?style=svg)](https://circleci.com/gh/annapamma/spring-petclinic)
+[![CircleCI](https://circleci.com/gh/annapamma/spring-petclinic/tree/2.1-orbs-config.svg?style=svg)](https://circleci.com/gh/annapamma/spring-petclinic/tree/2.1-orbs-config)
 
 This is an example application showcasing how to run a Java app on CircleCI 2.1. This application uses the [Spring PetClinic sample project](https://projects.spring.io/spring-petclinic/).
 This readme includes pared down sample configs for different CircleCI features, including workspace, dependency caching, and parallelism.
@@ -29,7 +29,3 @@ Here we are using the [maven orb](https://circleci.com/orbs/registry/orb/circlec
 The `maven/test` command checks out the code, builds, tests, and uploads the test result. 
 The parameters of this command can be customized. See the [maven orb docs](https://circleci.com/orbs/registry/orb/circleci/maven) for more information.
 
-
-
-
- 
