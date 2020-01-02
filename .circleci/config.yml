@@ -6,6 +6,10 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
       - run: ./mvnw test verify
       - store_artifacts:
           path: target/site/jacoco/index.html
@@ -15,7 +19,15 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
       - run: ./mvnw -Dmaven.test.skip=true package
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
 
 workflows:
   version: 2
