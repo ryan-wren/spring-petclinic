@@ -30,6 +30,9 @@ executors:
  docker-executor:
    docker:
      - image: circleci/openjdk:stretch
+ machine-executor:
+   machine:
+     image: ubuntu-1604:201903-01
 
 jobs:
   test:
@@ -38,8 +41,7 @@ jobs:
       - test
 
   build:
-    machine:
-      image: ubuntu-1604:201903-01
+    executor: machine-executor
     steps:
       - build
 
