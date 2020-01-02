@@ -81,7 +81,7 @@ jobs:
               - ~/.m2
             key: v1-dependencies-{{ checksum "pom.xml" }}
 ```
-The first time I ran this build without any dependencies cached (https://circleci.com/gh/annapamma/spring-petclinic/45), it took 2m14s. Once I was able to just restore my dependencies, the build took 39 seconds (https://circleci.com/gh/annapamma/spring-petclinic/46). 
+The first time I ran this build [without any dependencies cached](https://circleci.com/gh/annapamma/spring-petclinic/45), it took 2m14s. Once I was able to just restore my dependencies, the [build took 39 seconds](https://circleci.com/gh/annapamma/spring-petclinic/46). 
 
 Note that the `restore_cache` step will restore whichever cache it first matches. I add a restore key here as a fallback. In this case, even if pom.xml changes, I can still restore the previous cache. This means my job will only have to fetch the dependencies that have changed between the new pom.xml and the previous cache. 
 
