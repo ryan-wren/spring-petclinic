@@ -2,6 +2,7 @@ version: 2.0
 
 jobs:
   test:
+    parallelism: 2
     docker:
       - image: circleci/openjdk:stretch
     steps:
@@ -10,7 +11,17 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
             - v1-dependencies-
-      - run: ./mvnw test verify
+#      - run: ./mvnw test verify
+      - run: |
+            ./mvnw \
+            -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
+            | circleci tests split --split-by=timings); \
+            do basename $file \
+            | sed -e "s/.java/,/"; \
+            done | tr -d '\r\n') \
+            -e test
+      - store_test_results: # We use this timing data to optimize the future runs
+          path: target/surefire-reports
       - store_artifacts:
           path: target/site/jacoco/index.html
 
