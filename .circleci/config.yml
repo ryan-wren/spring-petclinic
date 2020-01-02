@@ -6,8 +6,6 @@ jobs:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
-      - attach_workspace:
-          at: ./target
       - run: ./mvnw test
 
   build:
@@ -16,17 +14,14 @@ jobs:
     steps:
       - checkout
       - run: ./mvnw -Dmaven.test.skip=true package
-      - persist_to_workspace:
-         root: ./
-         paths:
-           - target/
 
 workflows:
   version: 2
 
-  test-then-build:
+  build-then-test:
     jobs:
-      - test
-      - build:
+      - build
+      - test:
           requires:
-            - test
+            - build
+
