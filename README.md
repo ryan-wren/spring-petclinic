@@ -14,11 +14,7 @@ To see these features in a version 2.0 config, please see the [master branch](ht
 
 ## Sample configurations: version 2.0
 - [Building and testing with reusable cache commands](#building-and-testing-with-reusable-cache-commands)
-- [Using a workflow to test then build](#using-a-workflow-to-test-then-build)
-- [Caching dependencies](#caching-dependencies)
-- [Splitting tests across parallel containers](#splitting-tests-across-parallel-containers)
-- [Storing code coverage artifacts](#storing-code-coverage-artifacts)
-- [All together](#all-together)
+
 
 ### Building and testing with reusable cache commands
 ```yaml
@@ -66,4 +62,61 @@ workflows:
             - build
 ```
 Notice that the `restore_cache_cmd` and `save_cache_cmd` commands that we have declared at the beginning of the config have been reused in both the `test` and `build` jobs.
+Also note that `workflows` in CircleCI 2.1 do not require a `version`. In fact, adding a `version` to 
+
+### Reusing commands in commands
+```yaml
+version: 2.1
+
+commands: # a named collection of steps that can be reused in different jobs
+  restore_cache_cmd:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+  save_cache_cmd:
+    steps:
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+  test:
+    steps:
+      - checkout
+      - restore_cache_cmd
+      - run: ./mvnw test
+      - save_cache_cmd
+  build:
+    steps:
+      - checkout
+      - restore_cache_cmd
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - save_cache_cmd
+
+jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - test
+
+
+  build:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - build
+
+workflows:
+  build-then-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+```
+Here we have abstracted the build and test steps into commands. 
+This will allow us to reuse these jobs with a single line. 
+Note that we are able to use the `restore_cache_cmd` and `save_cache_cmd` commands in the command definitions for `build` and `test`.
 

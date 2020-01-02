@@ -26,6 +26,11 @@ commands: # a named collection of steps that can be reused in different jobs
       - run: ./mvnw -Dmaven.test.skip=true package
       - save_cache_cmd
 
+# executors:
+#   docker-executor:
+#     docker:
+#       - image: circleci/openjdk:stretch
+
 jobs:
   test:
     docker:
@@ -41,6 +46,7 @@ jobs:
       - build
 
 workflows:
+  version: 2
   build-then-test:
     jobs:
       - build
