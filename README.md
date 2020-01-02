@@ -2,10 +2,15 @@
 # Spring PetClinic Sample Application
  
 TODO: add CircleCI build status
+
 TODO: add link to Spring PetClinic page on Spring
 
 ## Sample configurations
-### The most basic build
+[A basic build](#a-basic-build)
+
+[Splitting tests across parallel containers](#splitting-tests-across-parallel-containers)
+
+### A basic build
 ```yaml
 version: 2.0
 
