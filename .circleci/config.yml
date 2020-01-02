@@ -4,6 +4,9 @@ orbs:
   maven: circleci/maven@0.0.12
 
 workflows:
-  maven_test_parallel:
+  maven_test:
     jobs:
-      - maven/parallel_test
+      - maven/test:
+          executor:
+            docker:
+              - image: 'circleci/openjdk:9'
