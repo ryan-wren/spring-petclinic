@@ -4,6 +4,6 @@ orbs:
   maven: circleci/maven@0.0.12
 
 workflows:
-  maven_test:
+  maven_test_parallel:
     jobs:
       - maven/parallel_test
