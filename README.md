@@ -119,3 +119,5 @@ Here we have abstracted the build and test steps into commands.
 This will allow us to reuse these jobs with a single line. 
 Note that we are able to use the `restore_cache_cmd` and `save_cache_cmd` commands in the command definitions for `build` and `test`.
 
+### Running with multiple executors
+
