@@ -24,7 +24,7 @@ To see these features in a version 2.0 config, please see the [master branch](ht
 ```yaml
 version: 2.1
 
-commands:
+commands: # a named collection of steps that can be reused in different jobs
   restore_cache_cmd:
     steps:
       - restore_cache:
@@ -39,6 +39,15 @@ commands:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
 jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - restore_cache_cmd
+      - run: ./mvnw test
+      - save_cache_cmd
+
   build:
     docker:
       - image: circleci/openjdk:stretch
@@ -47,9 +56,5 @@ jobs:
       - restore_cache_cmd
       - run: ./mvnw -Dmaven.test.skip=true package
       - save_cache_cmd
-
 ```
-
-Version 2.0 configs without workflows will look for a job entitled `build`.
-A job is a essentially a series of commands run in a clean execution environment. Notice the two primary parts of a job: the executor and steps. In this case, we are using the `docker` executor and passing in a [CCI convenience image](https://circleci.com/docs/2.0/circleci-images/). 
-
+Notice that the `restore_cache_cmd` and `save_cache_cmd` commands that we have declared at the beginning of the config have been reused in both the `test` and `build` jobs.

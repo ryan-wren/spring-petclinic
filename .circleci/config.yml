@@ -1,6 +1,6 @@
 version: 2.1
 
-commands:
+commands: # a named collection of steps that can be reused in different jobs
   restore_cache_cmd:
     steps:
       - restore_cache:
@@ -16,25 +16,13 @@ commands:
 
 jobs:
   test:
-    parallelism: 2
     docker:
       - image: circleci/openjdk:stretch
     steps:
       - checkout
       - restore_cache_cmd
-      - run: |
-            ./mvnw \
-            -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
-            | circleci tests split --split-by=timings); \
-            do basename $file \
-            | sed -e "s/.java/,/"; \
-            done | tr -d '\r\n') \
-            -e test verify
+      - run: ./mvnw test
       - save_cache_cmd
-      - store_test_results:
-          path: target/surefire-reports
-      - store_artifacts:
-          path: target/site/jacoco/index.html
 
   build:
     docker:
