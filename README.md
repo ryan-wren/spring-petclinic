@@ -13,6 +13,7 @@ To see these features in a version 2.1 config and how we would use orbs to check
 - [A basic build](#a-basic-build)
 - [Using a workflow to build then test](#using-a-workflow-to-build-then-test)
 - [Caching dependencies](#caching-dependencies)
+- [Persisting build artifacts to workspace](#persisting-build-artifacts-to-workspace)
 - [Splitting tests across parallel containers](#splitting-tests-across-parallel-containers)
 - [Storing code coverage artifacts](#storing-code-coverage-artifacts)
 - [All together](#all-together)
