@@ -11,7 +11,6 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
             - v1-dependencies-
-#      - run: ./mvnw test verify
       - run: |
             ./mvnw \
             -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
@@ -20,7 +19,7 @@ jobs:
             | sed -e "s/.java/,/"; \
             done | tr -d '\r\n') \
             -e test verify
-      - store_test_results: # We use this timing data to optimize the future runs
+      - store_test_results:
           path: target/surefire-reports
       - store_artifacts:
           path: target/site/jacoco/index.html
