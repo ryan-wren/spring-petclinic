@@ -159,42 +159,6 @@ Then I used `sed` and `tr` to translate this newline-separated list of test file
 
 Adding `store_test_results` enables CircleCI to access the historical timing data for previous executions of these tests, so the platform knows how to split tests to achieve the fastest overall runtime. 
 
-### Caching source
-```yaml
-version: 2.0
 
-jobs:
-  test:
-    parallelism: 2 # parallel containers to split the tests among
-    docker:
-      - image: circleci/openjdk:stretch
-    steps:
-      - checkout
-      - run: |
-          ./mvnw \
-          -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
-          | circleci tests split --split-by=timings); \
-          do basename $file \
-          | sed -e "s/.java/,/"; \
-          done | tr -d '\r\n') \
-          -e test
-      - store_test_results: # We use this timing data to optimize the future runs
-          path: target/surefire-reports
 
-  build:
-    docker:
-      - image: circleci/openjdk:stretch
-    steps:
-      - checkout
-      - run: ./mvnw -Dmaven.test.skip=true package
 
-workflows:
-  version: 2
-
-  test-then-build:
-    jobs:
-      - test
-      - build:
-          requires:
-            - test
-```
