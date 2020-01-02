@@ -120,4 +120,81 @@ This will allow us to reuse these jobs with a single line.
 Note that we are able to use the `restore_cache_cmd` and `save_cache_cmd` commands in the command definitions for `build` and `test`.
 
 ### Running with multiple executors
+```yaml
+version: 2.1
+
+commands:
+  restore_cache_cmd:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+  save_cache_cmd:
+    steps:
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+  test:
+    steps:
+      - checkout
+      - restore_cache_cmd
+      - run: ./mvnw test
+      - save_cache_cmd
+  build:
+    steps:
+      - checkout
+      - restore_cache_cmd
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - save_cache_cmd
+
+executors:
+ docker-executor:
+   docker:
+     - image: circleci/openjdk:9.0.4-12
+ machine-executor:
+   machine:
+     image: ubuntu-1604:201903-01
+
+jobs:
+  test-with-docker:
+    executor: docker-executor
+    steps:
+      - test
+
+  build-with-docker:
+    executor: docker-executor
+    steps:
+      - build
+
+  test-with-machine:
+    executor: machine-executor
+    steps:
+      - test
+
+  build-with-machine:
+    executor: machine-executor
+    steps:
+      - build
+
+
+workflows:
+  build-then-test-with-docker:
+    jobs:
+      - build-with-docker
+      - test-with-docker:
+          requires:
+            - build-with-docker
+
+  build-then-test-with-machine:
+    jobs:
+      - build-with-machine
+      - test-with-machine:
+          requires:
+            - build-with-machine
+```
+The `executors` key allows us to pass in reusable executors. 
+In this case, we are using a docker image with the `openjdk:9.0.4-12` tag and a virtual machine with an Ubuntu OS. 
+This is to demonstrate that you can reuse these commands and test them against different versions of Java and operating systems.
 

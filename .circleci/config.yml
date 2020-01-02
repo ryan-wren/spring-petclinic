@@ -29,7 +29,7 @@ commands:
 executors:
  docker-executor:
    docker:
-     - image: circleci/openjdk:stretch
+     - image: circleci/openjdk:9.0.4-12
  machine-executor:
    machine:
      image: ubuntu-1604:201903-01
