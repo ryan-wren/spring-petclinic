@@ -4,6 +4,7 @@
 [![CircleCI](https://circleci.com/gh/annapamma/spring-petclinic.svg?style=svg)](https://circleci.com/gh/annapamma/spring-petclinic)
 
 This is an example application showcasing how to run a Java app on CircleCI 2.0. This application uses the [Spring PetClinic sample project](https://projects.spring.io/spring-petclinic/).
+
 This readme includes pared down sample configs for different CircleCI features, including workspace, dependency caching, and parallelism.
 
 ## Sample configurations: version 2.0
