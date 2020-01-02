@@ -55,7 +55,7 @@ jobs:
 workflows:
   version: 2
 
-  test-then-build:
+  build-then-test:
     jobs:
       - build
       - test:
@@ -117,12 +117,12 @@ jobs:
 workflows:
   version: 2
 
-  test-then-build:
+  build-then-test:
     jobs:
-      - test
-      - build:
+      - build
+      - test:
           requires:
-            - test
+            - build
 ```
 This special step allows you to persist files or directories to be used by downstream jobs in the workflow. In this case, the `target` directory produced by the `build` step is persisted for use by the test step. 
 
@@ -158,12 +158,13 @@ jobs:
 workflows:
   version: 2
 
-  test-then-build:
+  build-then-test:
     jobs:
-      - test
-      - build:
+      - build
+      - test:
           requires:
-            - test
+            - build
+
 ```
 Splitting tests by timings is a great way to divide time-consuming tests across multiple parallel containers. 
 I think of splitting by timings as requiring 4 parts:
@@ -215,6 +216,8 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
             - v1-dependencies-
+      - attach_workspace:
+          at: ./target
       - run: |
             ./mvnw \
             -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
@@ -242,16 +245,20 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
+      - persist_to_workspace:
+         root: ./
+         paths:
+           - target/
 
 workflows:
   version: 2
 
-  test-then-build:
+  build-then-test:
     jobs:
-      - test
-      - build:
+      - build
+      - test:
           requires:
-            - test
+            - build
 ```
 All of these features can be used in a single config file to optimize your build. 
 
