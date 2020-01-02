@@ -11,7 +11,7 @@ To see these features in a version 2.1 config and how we would use orbs to check
 
 ## Sample configurations: version 2.0
 - [A basic build](#a-basic-build)
-- [Using a workflow to test then build](#using-a-workflow-to-test-then-build)
+- [Using a workflow to build then test](#using-a-workflow-to-build-then-test)
 - [Caching dependencies](#caching-dependencies)
 - [Splitting tests across parallel containers](#splitting-tests-across-parallel-containers)
 - [Storing code coverage artifacts](#storing-code-coverage-artifacts)
@@ -33,7 +33,7 @@ jobs:
 Version 2.0 configs without workflows will look for a job entitled `build`.
 A job is a essentially a series of commands run in a clean execution environment. Notice the two primary parts of a job: the executor and steps. In this case, we are using the `docker` executor and passing in a [CCI convenience image](https://circleci.com/docs/2.0/circleci-images/). 
 
-### Using a workflow to test then build
+### Using a workflow to build then test
 ```yaml
 version: 2.0
 
@@ -57,13 +57,13 @@ workflows:
 
   test-then-build:
     jobs:
-      - test
-      - build:
+      - build
+      - test:
           requires:
-            - test
+            - build
 ```
-A workflow is a dependency graph of jobs. This basic workflow runs a `test` job and a `build` job. 
-The `build` job will not run unless the `test` job exits successfully. 
+A workflow is a dependency graph of jobs. This basic workflow runs a `build` job followed by a `test` job. 
+The `test` job will not run unless the `build` job exits successfully. 
 
 ### Caching dependencies
 ```yaml
@@ -88,6 +88,43 @@ jobs:
 The first time I ran this build [without any dependencies cached](https://circleci.com/gh/annapamma/spring-petclinic/45), it took 2m14s. Once I was able to just restore my dependencies, the [build took 39 seconds](https://circleci.com/gh/annapamma/spring-petclinic/46). 
 
 Note that the `restore_cache` step will restore whichever cache it first matches. I add a restore key here as a fallback. In this case, even if pom.xml changes, I can still restore the previous cache. This means my job will only have to fetch the dependencies that have changed between the new pom.xml and the previous cache. 
+
+### Persisting build artifacts to workspace
+```yaml
+version: 2.0
+
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - persist_to_workspace:
+         root: ./
+         paths:
+           - target/
+
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./target
+      - run: ./mvnw test
+
+workflows:
+  version: 2
+
+  test-then-build:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
+```
+This special step allows you to persist files or directories to be used by downstream jobs in the workflow. In this case, the `target` directory produced by the `build` step is persisted for use by the test step. 
 
 ### Splitting tests across parallel containers
 ```yaml
