@@ -38,8 +38,8 @@ jobs:
       - test
 
   build:
-    docker:
-      - image: circleci/openjdk:9.0.4-12
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - build
 
