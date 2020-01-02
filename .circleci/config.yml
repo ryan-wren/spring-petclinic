@@ -10,9 +10,19 @@ jobs:
       - store_artifacts:
           path: target/site/jacoco/index.html
 
+  build:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - run: ./mvnw -Dmaven.test.skip=true package
+
 workflows:
   version: 2
 
-  test-with-store-artifacts:
+  test-then-build:
     jobs:
       - test
+      - build:
+          requires:
+            - test
