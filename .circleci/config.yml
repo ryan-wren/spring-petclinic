@@ -2,10 +2,11 @@ version: 2.1
 
 commands:
   my-restore-cache:
-    - restore_cache:
-        keys:
-          - v1-dependencies-{{ checksum "pom.xml" }}
-          - v1-dependencies-
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
 
 jobs:
 #  test:
