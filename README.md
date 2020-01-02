@@ -5,7 +5,7 @@
 
 TODO: add link to Spring PetClinic page on Spring
 
-## Sample configurations
+## Sample configurations: version 2.0
 - [A basic build](#a-basic-build)
 - [Using a workflow to test then build](#using-a-workflow-to-test-then-build)
 - [Caching dependencies](#caching-dependencies)
