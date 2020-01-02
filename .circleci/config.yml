@@ -15,28 +15,26 @@ commands:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
 jobs:
-#  test:
-#    parallelism: 2
-#    docker:
-#      - image: circleci/openjdk:stretch
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          keys:
-#            - v1-dependencies-{{ checksum "pom.xml" }}
-#            - v1-dependencies-
-#      - run: |
-#            ./mvnw \
-#            -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
-#            | circleci tests split --split-by=timings); \
-#            do basename $file \
-#            | sed -e "s/.java/,/"; \
-#            done | tr -d '\r\n') \
-#            -e test verify
-#      - store_test_results:
-#          path: target/surefire-reports
-#      - store_artifacts:
-#          path: target/site/jacoco/index.html
+  test:
+    parallelism: 2
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - checkout
+      - restore_cache_cmd
+      - run: |
+            ./mvnw \
+            -Dtest=$(for file in $(circleci tests glob "src/test/**/**.java" \
+            | circleci tests split --split-by=timings); \
+            do basename $file \
+            | sed -e "s/.java/,/"; \
+            done | tr -d '\r\n') \
+            -e test verify
+      - save_cache_cmd
+      - store_test_results:
+          path: target/surefire-reports
+      - store_artifacts:
+          path: target/site/jacoco/index.html
 
   build:
     docker:
