@@ -19,7 +19,7 @@ jobs:
             do basename $file \
             | sed -e "s/.java/,/"; \
             done | tr -d '\r\n') \
-            -e test
+            -e test verify
       - store_test_results: # We use this timing data to optimize the future runs
           path: target/surefire-reports
       - store_artifacts:
