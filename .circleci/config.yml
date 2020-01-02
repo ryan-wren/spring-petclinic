@@ -1,7 +1,7 @@
 version: 2.1
 
 commands:
-  my-restore-cache:
+  my_restore_cache:
     steps:
       - restore_cache:
           keys:
