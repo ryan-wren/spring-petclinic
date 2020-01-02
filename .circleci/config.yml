@@ -39,12 +39,13 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
+
 workflows:
   version: 2
 
-  test-then-build:
+  build-then-test:
     jobs:
-      - test
-      - build:
+      - build
+      - test:
           requires:
-            - test
+            - build
