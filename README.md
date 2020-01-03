@@ -1,7 +1,7 @@
 
 # Spring PetClinic Sample Application
  
-[![CircleCI](https://circleci.com/gh/annapamma/spring-petclinic.svg?style=svg)](https://circleci.com/gh/annapamma/spring-petclinic)
+[![CircleCI](https://circleci.com/gh/annapamma/spring-petclinic/tree/2.1-simplified-config.svg?style=svg)](https://circleci.com/gh/annapamma/spring-petclinic/tree/2.1-simplified-config)
 
 This is an example application showcasing how to run a Java app on CircleCI 2.1. This application uses the [Spring PetClinic sample project](https://projects.spring.io/spring-petclinic/).
 
