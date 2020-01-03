@@ -8,6 +8,9 @@ This readme includes pared down sample configs for different CircleCI features, 
 
 To see how these steps would be configured in a 2.0 config, please check out the [master branch](https://github.com/annapamma/spring-petclinic/tree/master).
 
+To see these features in a version 2.1 config with reusable commands and running on different executors, please see the [2.1-simplified-config branch](https://github.com/annapamma/spring-petclinic/tree/2.1-simplified-config).
+
+
 ## Sample configurations: version 2.1
 - [A basic build with an orb](#a-basic-build-with-an-orb)
 
