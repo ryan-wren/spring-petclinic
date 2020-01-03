@@ -14,7 +14,8 @@ To see these features in a version 2.0 config, please see the [master branch](ht
 
 ## Sample configurations: version 2.0
 - [Building and testing with reusable cache commands](#building-and-testing-with-reusable-cache-commands)
-
+- [Reusing commands in commands](#reusing-commands-in-commands)
+- [Running with multiple executors](#running-with-multiple-executors)
 
 ### Building and testing with reusable cache commands
 ```yaml
