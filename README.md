@@ -7,7 +7,7 @@ This is an example application showcasing how to run a Java app on CircleCI 2.0.
 
 This readme includes pared down sample configs for different CircleCI features, including workspace, dependency caching, and parallelism.
 
-## Different versions
+## Version 2.1
 To see how we would use orbs to checkout, build, and test in one line, please see the [2.1-orbs-config branch](https://github.com/annapamma/spring-petclinic/tree/2.1-orbs-config).
 
 To see these features in a version 2.1 config with reusable commands and running on different executors, please see the [2.1-simplified-config branch](https://github.com/annapamma/spring-petclinic/tree/2.1-simplified-config).
