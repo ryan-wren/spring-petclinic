@@ -31,4 +31,3 @@ This config uses the language-specific orb to replace any executors, build tools
 Here we are using the [maven orb](https://circleci.com/orbs/registry/orb/circleci/maven), which simplifies building and testing Java projects using Maven. 
 The `maven/test` command checks out the code, builds, tests, and uploads the test result. 
 The parameters of this command can be customized. See the [maven orb docs](https://circleci.com/orbs/registry/orb/circleci/maven) for more information.
-
