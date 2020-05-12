@@ -1,72 +1,18 @@
-version: 2.1
-
-commands:
-  restore_cache_cmd:
-    steps:
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
-  save_cache_cmd:
-    steps:
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
-  test:
-    steps:
-      - checkout
-      - restore_cache_cmd
-      - run: ./mvnw test
-      - save_cache_cmd
-  build:
-    steps:
-      - checkout
-      - restore_cache_cmd
-      - run: ./mvnw -Dmaven.test.skip=true package
-      - save_cache_cmd
-
-executors:
- docker-executor:
-   docker:
-     - image: circleci/openjdk:9.0.4-12
- machine-executor:
-   machine:
-     image: ubuntu-1604:201903-01
+version: 2.0
 
 jobs:
-  test-with-docker:
-    executor: docker-executor
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
     steps:
-      - test
-
-  build-with-docker:
-    executor: docker-executor
-    steps:
-      - build
-
-  test-with-machine:
-    executor: machine-executor
-    steps:
-      - test
-
-  build-with-machine:
-    executor: machine-executor
-    steps:
-      - build
-
+      - checkout
+      - run: ./mvnw test verify
+      - store_artifacts:
+          path: target/site/jacoco/index.html
 
 workflows:
-  build-then-test-with-docker:
-    jobs:
-      - build-with-docker
-      - test-with-docker:
-          requires:
-            - build-with-docker
+  version: 2
 
-  build-then-test-with-machine:
+  test-with-store-artifacts:
     jobs:
-      - build-with-machine
-      - test-with-machine:
-          requires:
-            - build-with-machine
+      - test
